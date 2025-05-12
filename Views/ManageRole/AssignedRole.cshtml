@@ -1,0 +1,75 @@
+﻿@model List<UserRole>
+@{
+    Layout = "_SecondLayout";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Role Assign</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+</head>
+<body>
+    <div class="row mt-5">
+        <div class="col-md-4 mt-4 offset-4">
+            <div class="register-box mt-lg-5">
+                <div class="card card-outline card-primary">
+                    <div class="card-header text-center">
+                        <a href="#" class="h3">User Name:<b>@ViewBag.UserName</b></a>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AssignedRole" asp-controller="ManageRole" method="post">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="text-success">@ViewBag.msg</div>
+
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                <div class="alert alert-info">
+                                    <input type="hidden" asp-for="@Model[i].Id" />
+                                    <input type="hidden" asp-for="@Model[i].UserId" />
+                                    <input type="hidden" asp-for="@Model[i].Name" />
+                                    <input class="form-check-input" type="checkbox" asp-for="@Model[i].IsAssigned" />
+                                    <span>@Model[i].Name</span>
+                                </div>
+                            }
+                            <div class="row">
+                                <!-- /.col -->
+                                <div class="col-4">
+                                    <button type="submit" class="btn btn-primary btn-block" onclick="redirectToView()">Submit</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.form-box -->
+                </div><!-- /.card -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- /.register-box -->
+
+    <script type="text/javascript">
+            window.setTimeout(function redirectToView(){
+                window.location.href='/Home/ShowAllUsers';
+            },4000);
+    </script>
+</body>
+</html>
+

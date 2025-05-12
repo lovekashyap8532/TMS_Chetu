@@ -1,0 +1,45 @@
+﻿@model IEnumerable<TaskManagementSystem.Models.TaskProgress>
+@{
+    Layout = "_SecondLayout";
+}
+
+<div class="row mt-5">
+    <div class="col">
+        <div class="align-content-center">
+
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        @* <th>Task_Id</th> *@
+                        @* <th>Title</th>
+                        <th>CreatedDate</th> *@
+                        <th>Updated On</th>
+                        @* <th>DueDate</th> *@
+                        <th>TaskStatus</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var a = 0;
+                        foreach (var i in Model)
+                        {
+                            a++;
+                            <tr>
+                                 <td>@a</td> 
+                                @* <td>@i.Taskss.Id</td> *@
+                                @*<td>@i.Title</td>
+                                <td>@i.CreatedDate</td>*@
+                                <td>@i.UpdatedDate</td>
+                                @*<td>@i.DueDate</td>*@
+                                <td>@i.TaskStatus</td>
+                                <td>@i.Description</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

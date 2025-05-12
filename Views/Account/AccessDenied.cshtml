@@ -1,0 +1,9 @@
+﻿@{
+    if(User.Identity.Name != null){
+        Layout = "_SecondLayout";
+    }
+    else{
+        Layout = "_layout";
+    }
+}
+<p class="text-danger h1 text-center mt-3">You don't have permission to access this page</p>

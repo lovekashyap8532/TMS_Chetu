@@ -1,0 +1,94 @@
+﻿@model Login
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TaskManagementSystem.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="row mt-5">
+        <div class="col-md-4 mt-4 offset-3">
+            <div class="card offset-3 mt-5">
+                <div class="card-header">
+                    <h3>User Login</h3>
+                </div>
+                <div class="card-body">
+                    <form class="row g-3 needs-validation" novalidate asp-action="Login" asp-controller="Account">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="validationCustomEmail" class="form-label">Email</label>
+                                <div class="input-group has-validation">
+
+                                    <input type="email" class="form-control" id="validationCustomEmail" aria-describedby="inputGroupPrepend" asp-for="Email" required>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid Email.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="validationCustomPassword" class="form-label">Password</label>
+                                <div class="input-group has-validation">
+
+                                    <input type="password" class="form-control" id="validationCustomPassword" aria-describedby="inputGroupPrepend" asp-for="Password" required>
+                                    <div class="invalid-feedback">
+                                        Please enter a Password.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                                <label class="form-check-label" for="invalidCheck">
+                                    Agree to terms and conditions
+                                </label>
+                                <div class="invalid-feedback">
+                                    You must agree before submitting.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                    @* <a asp-action="Register" asp-controller="Account" class="text-center">Register Here</a> *@
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+                // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+          'use strict'
+
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.querySelectorAll('.needs-validation')
+
+          // Loop over them and prevent submission
+          Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+              form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+              }, false)
+            })
+        })()
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

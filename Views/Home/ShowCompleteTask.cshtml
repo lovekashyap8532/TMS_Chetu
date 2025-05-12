@@ -1,0 +1,290 @@
+﻿@model IEnumerable<TaskModel>
+@{
+    Layout = "_SecondLayout";
+}
+<link href="~/css/dropdown.css" rel="stylesheet" />
+<script src="~/js/dropdownreadallusertasks.js"></script>
+<script src="~/js/updatemodalview.js"></script>
+<!-- Modified Section: Add Task and Dropdown Alignment -->
+<div class="d-flex justify-content-between align-items-center p-3 bg-light border">
+    <!-- Left: Dropdown Menu -->
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <!-- First Level Submenu -->
+            <li class="dropdown-submenu">
+                <a class="dropdown-item submenu-toggle" href="#">Status &raquo;</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item filter-option" data-type="status" href="#">Pending</a></li>
+                    <li><a class="dropdown-item filter-option" data-type="status" href="#">InProgress</a></li>
+                    <li><a class="dropdown-item filter-option" data-type="status" href="#">Completed</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-submenu">
+                <a class="dropdown-item submenu-toggle" href="#">Priority &raquo;</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item filter-option" data-type="priority" href="#">High</a></li>
+                    <li><a class="dropdown-item filter-option" data-type="priority" href="#">Medium</a></li>
+                    <li><a class="dropdown-item filter-option" data-type="priority" href="#">Low</a></li>
+                </ul>
+            </li>
+            <li><a class="dropdown-item" id="searchTrigger" href="#">Search</a></li>
+        </ul>
+    </div>
+
+    <!-- Search Bar (Initially Hidden) -->
+    <div id="searchContainer" style="display: none; margin-top: 10px;">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by Title or Assigned To...">
+    </div>
+
+    <!-- Show All Button (Initially Hidden) -->
+    <button id="showAllBtn" class="btn btn-secondary" style="display: none;">Show All Data</button>
+    @* <a class="btn btn-success" style="float: left; margin-right: 20px;" asp-action="ShowCompleteTask" asp-controller="Home">Complete Task</a> *@
+
+</div>
+
+<!-- Table -->
+<table class="table table-bordered mt-3" id="taskTable">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>StartDate</th>
+            <th id="sortDueDate" style="cursor: pointer;">Due Date &uarr;</th>
+            <th>Status</th>
+            <th>Priority</th>
+            @* <th>AssignedDate</th> *@
+            @* <th>AssignedTo</th> *@
+            <th>View</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody class="text-auto">
+
+        @{
+            var a = 0;
+            foreach (var i in Model)
+            {
+                a++;
+                <tr>
+                    <td>@a</td>
+                    <td>@i.Title</td>
+                    <td>@i.Description</td>
+                    <td>@i.StartDate</td>
+                    <td>@i.DueDate</td>
+                    <td>
+                        <input type="hidden" id="hdnTskID" name="Id" value="0" />
+                        @{
+                            if (i.Status == "InProgress")
+                            {
+                                <button class="btn btn-warning">@i.Status</button>
+                            }
+                            else if (i.Status == "Completed")
+                            {
+                                <button class="btn btn-success">@i.Status</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-primary">@i.Status</button>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            if (i.Priority == "High")
+                            {
+                                <button class="btn btn-danger">@i.Priority</button>
+                            }
+                            else if (i.Priority == "Medium")
+                            {
+                                <button class="btn btn-warning">@i.Priority</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-info">@i.Priority</button>
+                            }
+                        }
+                    </td>
+                    @*<td>@i.AssignedDate</td>
+                    <td>@i.AssignedTo.FirstName @i.AssignedTo.LastName</td>*@
+                    <td class="project-actions">
+                        <a href="javascript:void(0);" class="btn btn-primary btn-sm" data-id="@i.Id" onclick="loadTaskProgress(this)">
+                            <i class="fas fa-folder"></i> View
+                        </a>
+
+                    </td>
+                    <td class="project-actions">
+                        @{
+                            if (i.DueDate <= DateTime.Now)
+                            {
+                                if (i.Status == "Completed")
+                                {
+                                    <a class="btn btn-warning edit-disabled toastssuccess" data-status="@i.Status">
+                                        <i class="fas fa-check">
+                                        </i> Updated
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-danger edit-disabled toastserror" data-status="@i.Status">
+                                        <i class="fas fa-close">
+                                        </i> Expired
+                                    </a>
+                                }
+
+                            }
+                            else if (i.Status == "Completed")
+                            {
+                                <a class="btn btn-warning edit-disabled toastssuccess">
+                                    <i class="fas fa-check">
+                                    </i> Updated
+                                </a>
+                            }
+                            else if (i.Status == "Pending")
+                            {
+                                <form asp-controller="Home" asp-action="EditUserTask" method="post">
+
+                                    <input type="hidden" name="Id" value="@i.Id" />
+                                    <button class="btn btn-secondary" type="submit">
+                                        <i class="fas fa-pencil-alt">
+                                        </i> Start Task
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+
+                            // <a value="@i.Id" onclick="ShowPopup(@i.Id)" class="btn btn-outline-info">
+                                //     <i class="fas fa-close">
+                                //     </i> Update
+                                // </a>
+                                <a href="javascript:void(0);" class="btn btn-outline-info" data-id="@i.Id" data-title="@i.Title" data-status="@i.Status" onclick="ShowPopup(this)">
+                                    <i class="fas fa-edit"></i> Update
+                                </a>
+
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+<!-- Update User's Task Modal -->
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- The title will be set dynamically -->
+                <h4 class="modal-title" id="modalTitle">Title</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="hidden" id="hdnTskID" value="0" />
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="Status" required>
+                            <option value="InProgress" selected>In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" placeholder="Description" id="Description" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnSubmit">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- View User's Task Report or History' -->
+<div class="modal fade" id="taskProgressModal" tabindex="-1" aria-labelledby="taskProgressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Task Progress Details</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Update Date</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskProgressTableBody">
+                        <!-- Data will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+          // $('.toastsupdatedanger').click(function() {
+          //    $(document).Toasts('create', {
+          //        class: 'bg-danger',
+          //        title: 'Toast Title',
+          //        subtitle: 'Subtitle',
+          //        body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          //    })
+          // });
+
+        $('.toastserror').click(function() {
+                 toastr.error('You can not update because it is Expired !!!', 'Task Expired');
+        });
+        // $('.toastsinfo').click(function() {
+        //          toastr.info('You can not update because it is In progress !!!', 'Task In Progress');
+        // });
+        // $('.toastswarning').click(function() {
+        //          toastr.warning('It is now in demo mode You can not update because it is In progress !!!', 'Task InProgress');
+        // });
+        $('.toastssuccess').click(function() {
+                 toastr.success('You can not update because it is already completed Successfully !!!', 'Task Completed');
+        });
+
+    });
+
+    $(document).ready(function () {
+         let isAscending = true;
+
+         $("#sortDueDate").click(function () {
+             let rows = $("#taskTable tbody tr").toArray().reverse(); // Reverse the current order
+             $("#taskTable tbody").append(rows); // Re-append to toggle order
+
+             isAscending = !isAscending;
+             $("#sortDueDate").html(`Due Date ${isAscending ? "&uarr;" : "&darr;"}`); // Toggle arrow
+         });
+     });
+</script>

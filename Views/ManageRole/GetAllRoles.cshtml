@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    Layout = "_SecondLayout";
+}
+<div class="row mt-5">
+    <div class="col-md-4 mt-4 offset-4">
+        <a asp-action="AddRole" asp-controller="ManageRole">Add Role</a>
+        @* <div style="align-self:auto"> *@
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Role</th>
+                    <th>Edit Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int a = 0;
+                    foreach (var r in Model)
+                    { 
+                        a = a + 1;
+                        <tr>
+                            <td>@a</td>
+                            <td>@r.Name</td>
+                            <td>
+                                <a class="btn btn-info" asp-action="EditRole" asp-controller="ManageRole" asp-route-id="@r.Id">Edit Role</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        @* </div> *@
+    </div>
+</div>
+
+ 
